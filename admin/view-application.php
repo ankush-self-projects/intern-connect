@@ -1,5 +1,5 @@
 <?php
-require '../config/config.php';
+require '../includes/bootstrap.php';
 require '../includes/functions.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -7,10 +7,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id = (int)$_GET['id'];
-$stmt = $pdo->prepare("SELECT * FROM applications WHERE id = ?");
-$stmt->execute([$id]);
-$application = $stmt->fetch(PDO::FETCH_ASSOC);
-
+$application = getApplicationById($pdo, $id);
 if (!$application) {
     redirect('../admin/dashboard.php');
 }
@@ -58,22 +55,13 @@ if (!$application) {
                                 <tr>
                                     <td><strong>Payment Status:</strong></td>
                                     <td>
-                                        <?php 
-                                        $paymentClass = $application['payment_status'] === 'completed' ? 'bg-success' : 
-                                                      ($application['payment_status'] === 'failed' ? 'bg-danger' : 'bg-warning');
-                                        ?>
-                                        <span class="badge <?= $paymentClass ?>"><?= ucfirst($application['payment_status']) ?></span>
+                                        <span class="badge <?= getBadgeClassForPayment($application['payment_status']) ?>"><?= ucfirst($application['payment_status']) ?></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><strong>Admin Status:</strong></td>
                                     <td>
-                                        <?php 
-                                        $statusClass = $application['admin_status'] === 'approved' ? 'bg-success' : 
-                                                     ($application['admin_status'] === 'rejected' ? 'bg-danger' : 
-                                                     ($application['admin_status'] === 'reviewed' ? 'bg-info' : 'bg-secondary'));
-                                        ?>
-                                        <span class="badge <?= $statusClass ?>"><?= ucfirst($application['admin_status']) ?></span>
+                                        <span class="badge <?= getBadgeClassForAdmin($application['admin_status']) ?>"><?= ucfirst($application['admin_status']) ?></span>
                                     </td>
                                 </tr>
                                 <tr>

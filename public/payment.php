@@ -1,6 +1,5 @@
 <?php
-require '../config/config.php';
-require '../config/payment.php';
+require '../includes/bootstrap.php';
 require '../includes/functions.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -16,18 +15,7 @@ if (!$application) {
     redirect('index.php');
 }
 
-function amountForDuration(string $duration): int {
-    $normalized = strtolower(trim($duration));
-    if ($normalized === '3 months') {
-        return 49900; // €499.00 in cents
-    }
-    if ($normalized === '6 months') {
-        return 69900; // €699.00 in cents
-    }
-    return 0;
-}
-
-$amountCents = amountForDuration($application['duration']);
+$amountCents = getAmountCentsForDuration($application['duration']);
 if ($amountCents <= 0) {
     die('Invalid program duration for payment');
 }

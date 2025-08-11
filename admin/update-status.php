@@ -1,5 +1,5 @@
 <?php
-require '../config/config.php';
+require '../includes/bootstrap.php';
 require '../includes/functions.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id']) || !isset($_GET['status'])) {
@@ -16,10 +16,8 @@ if (!in_array($status, $valid_statuses)) {
 }
 
 try {
-    $stmt = $pdo->prepare("UPDATE applications SET admin_status = ? WHERE id = ?");
-    $stmt->execute([$status, $id]);
-    
-    if ($stmt->rowCount() > 0) {
+    $ok = updateApplication($pdo, $id, ['admin_status' => $status]);
+    if ($ok) {
         $message = "Application status updated successfully to: " . ucfirst($status);
         $alert_class = "alert-success";
     } else {

@@ -1,6 +1,5 @@
 <?php
-require '../config/config.php';
-require '../config/payment.php';
+require '../includes/bootstrap.php';
 require '../includes/functions.php';
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {

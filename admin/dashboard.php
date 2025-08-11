@@ -1,5 +1,5 @@
 <?php
-require '../config/config.php';
+require '../includes/bootstrap.php';
 $applications = $pdo->query("SELECT * FROM applications ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <?php include '../includes/header.php'; ?>
@@ -43,19 +43,10 @@ $applications = $pdo->query("SELECT * FROM applications ORDER BY created_at DESC
                         <td><?= htmlspecialchars($app['phone']) ?></td>
                         <td><span class="badge bg-primary"><?= htmlspecialchars($app['duration']) ?></span></td>
                         <td>
-                            <?php 
-                            $paymentClass = $app['payment_status'] === 'completed' ? 'bg-success' : 
-                                          ($app['payment_status'] === 'failed' ? 'bg-danger' : 'bg-warning');
-                            ?>
-                            <span class="badge <?= $paymentClass ?>"><?= ucfirst($app['payment_status']) ?></span>
+                            <span class="badge <?= getBadgeClassForPayment($app['payment_status']) ?>"><?= ucfirst($app['payment_status']) ?></span>
                         </td>
                         <td>
-                            <?php 
-                            $statusClass = $app['admin_status'] === 'approved' ? 'bg-success' : 
-                                         ($app['admin_status'] === 'rejected' ? 'bg-danger' : 
-                                         ($app['admin_status'] === 'reviewed' ? 'bg-info' : 'bg-secondary'));
-                            ?>
-                            <span class="badge <?= $statusClass ?>"><?= ucfirst($app['admin_status']) ?></span>
+                            <span class="badge <?= getBadgeClassForAdmin($app['admin_status']) ?>"><?= ucfirst($app['admin_status']) ?></span>
                         </td>
                         <td><?= date('M d, Y', strtotime($app['created_at'])) ?></td>
                         <td>
