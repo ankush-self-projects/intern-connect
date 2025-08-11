@@ -1,5 +1,5 @@
 <?php
-require '../config/config.php';
+require '../includes/bootstrap.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $full_name = sanitizeInput($_POST['full_name']);

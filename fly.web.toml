@@ -1,0 +1,42 @@
+# Fly.io app configuration for the web (PHP) service
+# Rename `app` to a unique name in your Fly org before deploying
+app = "intern-connect-web"
+primary_region = "ams"
+
+[build]
+  # Uses the Dockerfile in the repo
+
+[env]
+  # DB settings are set via secrets; example:
+  # fly secrets set DB_HOST=intern-connect-mysql.internal DB_NAME=internconnect DB_USER=root DB_PASSWORD=... 
+  # Stripe keys:
+  # fly secrets set STRIPE_SECRET_KEY=... STRIPE_PUBLISHABLE_KEY=...
+
+[[mounts]]
+  source = "uploads"
+  destination = "/var/www/html/assets/uploads"
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 80
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 200
+    soft_limit = 100
+
+  [[services.http_checks]]
+    interval = "10s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/"
+    protocol = "http"
+    timeout = "2s"

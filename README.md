@@ -149,3 +149,88 @@ Option B: Apache/Nginx
 
 ## License
 ISC (see `package.json`).
+
+---
+
+## Deployment with Docker
+
+### Quick start
+1. Copy the example env and adjust as needed:
+   ```bash
+   cp .env.example .env
+   # edit .env to set STRIPE keys and optionally change APP_PORT/MYSQL_ROOT_PASSWORD
+   ```
+2. Start the stack:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Open the app: `http://localhost:8080/` (or your `APP_PORT`).
+
+The first start will initialize MySQL and run `database.sql` to create schema and seed sample rows.
+
+### Environment variables
+- App container reads DB and Stripe settings from environment:
+  - `DB_HOST=db` (internal)
+  - `DB_NAME=internconnect`
+  - `DB_USER=root`
+  - `DB_PASSWORD` (from `MYSQL_ROOT_PASSWORD`)
+  - `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`
+- Change host port via `APP_PORT` in `.env`.
+
+### Data persistence
+- MySQL data persists in the named volume `db_data`.
+- Uploaded CVs are stored in the container at `/var/www/html/assets/uploads`. To persist uploads across rebuilds, mount a host volume:
+  ```yaml
+  services:
+    app:
+      volumes:
+        - ./assets/uploads:/var/www/html/assets/uploads
+  ```
+
+### Production notes
+- Put Docker behind a reverse proxy (e.g., Nginx/Traefik) with HTTPS.
+- Replace Stripe test keys with live keys and secure `.env`.
+- Add authentication to `admin/` before exposing publicly.
+
+---
+
+## Deploy to Fly.io
+
+Prerequisites:
+- Install Fly CLI and sign in: `curl -L https://fly.io/install.sh | sh` then `fly auth login`
+- Choose unique app names (update `fly.web.toml` and `fly.db.toml`)
+
+Steps:
+1. Provision MySQL app with volume:
+   ```bash
+   fly launch --now --copy-config --config fly.db.toml --no-deploy
+   fly vol create mysqldata --size 10 --region ams --app <your-mysql-app>
+   fly deploy --config fly.db.toml --app <your-mysql-app>
+   ```
+2. Seed schema (optional if you want initial data):
+   - Connect using `fly proxy 13306:3306 -a <your-mysql-app>` and run `mysql -h 127.0.0.1 -P 13306 -u root -p < database.sql`.
+3. Set secrets for the web app (Stripe + DB):
+   ```bash
+   fly secrets set \
+     DB_HOST=<your-mysql-app>.internal \
+     DB_NAME=internconnect \
+     DB_USER=root \
+     DB_PASSWORD=<root-password> \
+     STRIPE_SECRET_KEY=<sk_live_or_test> \
+     STRIPE_PUBLISHABLE_KEY=<pk_live_or_test> \
+     -a <your-web-app>
+   ```
+4. Create uploads volume and deploy web app:
+   ```bash
+   fly vol create uploads --size 1 --region ams --app <your-web-app>
+   fly deploy --config fly.web.toml --app <your-web-app>
+   ```
+5. Open the app:
+   ```bash
+   fly open -a <your-web-app>
+   ```
+
+Notes:
+- The web app stores uploads on a Fly volume mounted at `/var/www/html/assets/uploads`.
+- DB is accessible via internal hostname `<db-app>.internal`.
+- Add a Fly certificate to use a custom domain: `fly certs add yourdomain.com -a <your-web-app>`.

@@ -1,0 +1,26 @@
+# Fly.io app configuration for MySQL (single node)
+# Rename `app` to a unique name in your Fly org before deploying
+app = "intern-connect-mysql"
+primary_region = "ams"
+
+[build]
+  image = "bitnami/mysql:8.0"
+
+[env]
+  MYSQL_ROOT_PASSWORD = "change-me"
+  MYSQL_DATABASE = "internconnect"
+
+[[mounts]]
+  source = "mysqldata"
+  destination = "/bitnami/mysql"
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 3306
+
+  [[services.ports]]
+    port = 3306
+
+  [[services.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
