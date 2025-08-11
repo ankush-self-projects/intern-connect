@@ -149,3 +149,45 @@ Option B: Apache/Nginx
 
 ## License
 ISC (see `package.json`).
+
+---
+
+## Deployment with Docker
+
+### Quick start
+1. Copy the example env and adjust as needed:
+   ```bash
+   cp .env.example .env
+   # edit .env to set STRIPE keys and optionally change APP_PORT/MYSQL_ROOT_PASSWORD
+   ```
+2. Start the stack:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Open the app: `http://localhost:8080/` (or your `APP_PORT`).
+
+The first start will initialize MySQL and run `database.sql` to create schema and seed sample rows.
+
+### Environment variables
+- App container reads DB and Stripe settings from environment:
+  - `DB_HOST=db` (internal)
+  - `DB_NAME=internconnect`
+  - `DB_USER=root`
+  - `DB_PASSWORD` (from `MYSQL_ROOT_PASSWORD`)
+  - `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`
+- Change host port via `APP_PORT` in `.env`.
+
+### Data persistence
+- MySQL data persists in the named volume `db_data`.
+- Uploaded CVs are stored in the container at `/var/www/html/assets/uploads`. To persist uploads across rebuilds, mount a host volume:
+  ```yaml
+  services:
+    app:
+      volumes:
+        - ./assets/uploads:/var/www/html/assets/uploads
+  ```
+
+### Production notes
+- Put Docker behind a reverse proxy (e.g., Nginx/Traefik) with HTTPS.
+- Replace Stripe test keys with live keys and secure `.env`.
+- Add authentication to `admin/` before exposing publicly.
