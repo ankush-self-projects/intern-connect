@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // File Upload
     $cvName = time() . "_" . basename($_FILES["cv"]["name"]);
-    $targetPath = "../assets/uploads/" . $cvName;
+    $targetPath = __DIR__ . "/../assets/uploads/" . $cvName;
     move_uploaded_file($_FILES["cv"]["tmp_name"], $targetPath);
 
     // Insert into DB

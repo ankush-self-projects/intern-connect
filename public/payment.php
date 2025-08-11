@@ -20,8 +20,8 @@ if ($amountCents <= 0) {
 }
 
 $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-$successUrl = $baseUrl . '/public/payment-success.php?session_id={CHECKOUT_SESSION_ID}&id=' . $applicationId;
-$cancelUrl  = $baseUrl . '/public/payment.php?id=' . $applicationId;
+$successUrl = $baseUrl . '/payment-success.php?session_id={CHECKOUT_SESSION_ID}&id=' . $applicationId;
+$cancelUrl  = $baseUrl . '/payment.php?id=' . $applicationId;
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_checkout'])) {

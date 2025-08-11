@@ -66,14 +66,14 @@ include '../includes/header.php';
                     <h4 class="alert-heading">Payment Successful</h4>
                     <p>Thank you, <?= htmlspecialchars($application['full_name']) ?>. Your payment has been received.</p>
                 </div>
-                <a class="btn btn-primary" href="/public/index.php">Back to Home</a>
+                <a class="btn btn-primary" href="/">Back to Home</a>
                 <a class="btn btn-secondary" href="/admin/dashboard.php">Go to Admin</a>
             <?php else: ?>
                 <div class="alert alert-warning">
                     <h4 class="alert-heading">Awaiting Payment</h4>
                     <p><?= htmlspecialchars($error ?: 'We could not verify the payment. If you completed the payment, please wait a moment and refresh this page.') ?></p>
                 </div>
-                <a class="btn btn-outline-primary" href="/public/payment.php?id=<?= $applicationId ?>">Try Payment Again</a>
+                <a class="btn btn-outline-primary" href="/payment.php?id=<?= $applicationId ?>">Try Payment Again</a>
             <?php endif; ?>
         </div>
     </div>
