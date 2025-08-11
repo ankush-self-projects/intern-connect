@@ -1,0 +1,61 @@
+/* Custom styles for Intern Connect */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.table-responsive {
+    border-radius: 0.375rem;
+}
+
+.btn-group .btn {
+    margin-right: 0.25rem;
+}
+
+.alert {
+    border-radius: 0.375rem;
+}
+
+.badge {
+    font-size: 0.875em;
+}
+
+/* Custom colors for status badges */
+.bg-pending {
+    background-color: #6c757d !important;
+}
+
+.bg-reviewed {
+    background-color: #17a2b8 !important;
+}
+
+.bg-approved {
+    background-color: #28a745 !important;
+}
+
+.bg-rejected {
+    background-color: #dc3545 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 0.25rem;
+        margin-right: 0;
+    }
+}

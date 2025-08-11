@@ -1,7 +1,7 @@
 <?php include '../includes/header.php'; ?>
 <div class="container mt-4">
     <h2>Internship Application</h2>
-    <form action="process_application.php" method="POST" enctype="multipart/form-data">
+    <form action="application-request.php" method="POST" enctype="multipart/form-data">
         <input type="text" name="full_name" placeholder="Full Name" class="form-control mb-2" required>
         <input type="email" name="email" placeholder="Email" class="form-control mb-2" required>
         <input type="text" name="phone" placeholder="Phone" class="form-control mb-2" required>

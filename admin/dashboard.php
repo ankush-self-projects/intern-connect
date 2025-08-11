@@ -2,28 +2,75 @@
 require '../config/config.php';
 $applications = $pdo->query("SELECT * FROM applications ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
+<?php include '../includes/header.php'; ?>
 <div class="container mt-4">
-    <h2>Applications</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th><th>Email</th><th>Duration</th><th>Payment</th><th>Status</th><th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach($applications as $app): ?>
-            <tr>
-                <td><?= $app['full_name'] ?></td>
-                <td><?= $app['email'] ?></td>
-                <td><?= $app['duration'] ?></td>
-                <td><?= ucfirst($app['payment_status']) ?></td>
-                <td><?= ucfirst($app['admin_status']) ?></td>
-                <td>
-                    <a href="view_application.php?id=<?= $app['id'] ?>" class="btn btn-info btn-sm">View</a>
-                    <a href="update_status.php?id=<?= $app['id'] ?>&status=reviewed" class="btn btn-success btn-sm">Mark Reviewed</a>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <h2>Admin Dashboard - Applications</h2>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <strong>Total Applications:</strong> <?= count($applications) ?>
+            </div>
+        </div>
+    </div>
+    
+    <?php if (empty($applications)): ?>
+        <div class="alert alert-warning">
+            <h4>No applications found</h4>
+            <p>There are currently no internship applications in the system.</p>
+        </div>
+    <?php else: ?>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Duration</th>
+                        <th>Payment Status</th>
+                        <th>Admin Status</th>
+                        <th>Applied Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($applications as $app): ?>
+                    <tr>
+                        <td><?= $app['id'] ?></td>
+                        <td><?= htmlspecialchars($app['full_name']) ?></td>
+                        <td><?= htmlspecialchars($app['email']) ?></td>
+                        <td><?= htmlspecialchars($app['phone']) ?></td>
+                        <td><span class="badge bg-primary"><?= htmlspecialchars($app['duration']) ?></span></td>
+                        <td>
+                            <?php 
+                            $paymentClass = $app['payment_status'] === 'completed' ? 'bg-success' : 
+                                          ($app['payment_status'] === 'failed' ? 'bg-danger' : 'bg-warning');
+                            ?>
+                            <span class="badge <?= $paymentClass ?>"><?= ucfirst($app['payment_status']) ?></span>
+                        </td>
+                        <td>
+                            <?php 
+                            $statusClass = $app['admin_status'] === 'approved' ? 'bg-success' : 
+                                         ($app['admin_status'] === 'rejected' ? 'bg-danger' : 
+                                         ($app['admin_status'] === 'reviewed' ? 'bg-info' : 'bg-secondary'));
+                            ?>
+                            <span class="badge <?= $statusClass ?>"><?= ucfirst($app['admin_status']) ?></span>
+                        </td>
+                        <td><?= date('M d, Y', strtotime($app['created_at'])) ?></td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="view-application.php?id=<?= $app['id'] ?>" class="btn btn-info btn-sm">View</a>
+                                <a href="update-status.php?id=<?= $app['id'] ?>&status=reviewed" class="btn btn-success btn-sm">Review</a>
+                                <a href="update-status.php?id=<?= $app['id'] ?>&status=approved" class="btn btn-primary btn-sm">Approve</a>
+                                <a href="update-status.php?id=<?= $app['id'] ?>&status=rejected" class="btn btn-danger btn-sm">Reject</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
 </div>
+<?php include '../includes/footer.php'; ?>
