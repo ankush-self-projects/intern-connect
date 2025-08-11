@@ -1,6 +1,6 @@
 <?php
 require '../includes/bootstrap.php';
-require '../includes/functions.php';
+
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id']) || !isset($_GET['status'])) {
     redirect('dashboard.php');
