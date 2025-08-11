@@ -76,7 +76,7 @@ if (!$application) {
                         <div class="col-md-12">
                             <h6>CV/Resume</h6>
                             <p><strong>Filename:</strong> <?= htmlspecialchars($application['cv_filename']) ?></p>
-                            <a href="../assets/uploads/<?= $application['cv_filename'] ?>" target="_blank" class="btn btn-outline-primary">
+                            <a href="/assets/uploads/<?= $application['cv_filename'] ?>" target="_blank" class="btn btn-outline-primary">
                                 <i class="bi bi-download"></i> Download CV
                             </a>
                         </div>
